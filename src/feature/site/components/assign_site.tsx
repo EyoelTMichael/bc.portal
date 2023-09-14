@@ -1,82 +1,139 @@
-import { Button, Card, CardHeader, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Paper } from "@mui/material";
-import { useState } from "react";
+import {
+  Button,
+  Card,
+  CardHeader,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useGetAllUsersQuery } from "../../user/api/user.api";
+import { User } from "../../user/model/user";
+import axios from "axios";
+import { useAssignUserMutation } from "../api/site_endpoints";
 
-function not(a: readonly number[], b: readonly number[]) {
-  return a.filter((value) => b.indexOf(value) === -1);
+function not(a: readonly User[], b: readonly User[]) {
+  return a.filter((user) => !b.some((bUser) => bUser.id === user.id));
 }
 
-function intersection(a: readonly number[], b: readonly number[]) {
-  return a.filter((value) => b.indexOf(value) !== -1);
+function intersection(a: readonly User[], b: readonly User[]) {
+  return a.filter((userId) => b.some((user) => user.id === userId.id));
 }
 
-function union(a: readonly number[], b: readonly number[]) {
+function union(a: readonly User[], b: readonly User[]) {
   return [...a, ...not(b, a)];
 }
 
-
 interface AssignSiteDialogProps {
+  siteId: string;
   open: boolean;
   onClose: () => void;
 }
 
 const AssignSiteForm = (props: AssignSiteDialogProps) => {
- const [checked, setChecked] = useState<readonly number[]>([]);
-  const [left, setLeft] = useState<readonly number[]>([0, 1, 2, 3]);
-  const [right, setRight] = useState<readonly number[]>([4, 5, 6, 7]);
+  const [checked, setChecked] = useState<readonly User[]>([]);
+  const [left, setLeft] = useState<readonly User[]>([]);
+  const [right, setRight] = useState<readonly User[]>([]);
+  const { data: usersData, isLoading } = useGetAllUsersQuery({});
+
+  const [assignUser] = useAssignUserMutation();
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  const handleToggle = (user: User) => () => {
+    const isUserChecked = checked.some((u) => u.id === user.id);
+    let newChecked = [...checked];
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
+    if (!isUserChecked) {
+      newChecked.push(user);
     } else {
-      newChecked.splice(currentIndex, 1);
+      newChecked = newChecked.filter((u) => u.id !== user.id);
     }
 
     setChecked(newChecked);
   };
 
-  const numberOfChecked = (items: readonly number[]) =>
+  useEffect(() => {
+    if (usersData) {
+      setLeft(usersData);
+    }
+  }, [usersData]);
+
+  const numberOfChecked = (items: readonly User[]) =>
     intersection(checked, items).length;
 
-  const handleToggleAll = (items: readonly number[]) => () => {
-    if (numberOfChecked(items) === items.length) {
-      setChecked(not(checked, items));
+  const handleToggleAll = (users: readonly User[]) => () => {
+    if (numberOfChecked(users) === users.length) {
+      setChecked(not(checked, users));
     } else {
-      setChecked(union(checked, items));
+      setChecked(union(checked, users));
     }
   };
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
+    const leftCheckedIds = leftChecked.map((user) => user.id);
+    setRight(
+      right.concat(left.filter((user) => leftCheckedIds.includes(user.id)))
+    );
+    setLeft(left.filter((user) => !leftCheckedIds.includes(user.id)));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
+    const rightCheckedIds = rightChecked.map((user) => user.id);
+    setLeft(
+      left.concat(right.filter((user) => rightCheckedIds.includes(user.id)))
+    );
+    setRight(right.filter((user) => !rightCheckedIds.includes(user.id)));
     setChecked(not(checked, rightChecked));
   };
- 
-  const customList = (title: React.ReactNode, items: readonly number[]) => (
+
+  const handleAssignUser = async () => {
+    try {
+      console.log(props.siteId);
+      const users = right?.map((user) => user.id);
+      // const x = await assignUser({
+      //   body: {
+      //     siteId: props.siteId.toString(),
+      //     usersId: right?.map(user => user.id.toString()),
+      //   },
+      // });
+      await axios.post("http://192.168.1.2:5259/site/assignuser", {
+        siteId: props.siteId.toString(),
+        usersId: right?.map((user) => user.id.toString()),
+      });
+      // console.log("x", x);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const customList = (title: React.ReactNode, items: readonly User[]) => (
     <Card>
       <CardHeader
         sx={{ px: 2, py: 1 }}
         avatar={
           <Checkbox
             onClick={handleToggleAll(items)}
-            checked={numberOfChecked(items) === items.length && items.length !== 0}
+            checked={
+              numberOfChecked(items) === items.length && items.length !== 0
+            }
             indeterminate={
-              numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0
+              numberOfChecked(items) !== items.length &&
+              numberOfChecked(items) !== 0
             }
             disabled={items.length === 0}
             inputProps={{
-              'aria-label': 'all items selected',
+              "aria-label": "all Users selected",
             }}
           />
         }
@@ -88,34 +145,34 @@ const AssignSiteForm = (props: AssignSiteDialogProps) => {
         sx={{
           width: 200,
           height: 230,
-          bgcolor: 'background.paper',
-          overflow: 'auto',
+          bgcolor: "background.paper",
+          overflow: "auto",
         }}
         dense
         component="div"
         role="list"
       >
-        {items.map((value: number) => {
-          const labelId = `transfer-list-all-item-${value}-label`;
+        {items.map((user: User) => {
+          const labelId = `transfer-list-all-item-${user.id}-label`;
 
           return (
             <ListItem
-              key={value}
+              key={user.id}
               role="listitem"
               button
-              onClick={handleToggle(value)}
+              onClick={handleToggle(user)}
             >
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={checked.filter((u) => user.id === u.id).length > 0}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
-                    'aria-labelledby': labelId,
+                    "aria-labelledby": labelId,
                   }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText id={labelId} primary={user.fullName} />
             </ListItem>
           );
         })}
@@ -124,48 +181,48 @@ const AssignSiteForm = (props: AssignSiteDialogProps) => {
   );
 
   return (
-  <Dialog open={props.open} onClose={props.onClose}>
+    <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>Assign Site </DialogTitle>
       <DialogContent>
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList('All Users', left)}</Grid>
-      <Grid item>
-        <Grid container direction="column" alignItems="center">
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
-            aria-label="move selected right"
-          >
-            &gt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleCheckedLeft}
-            disabled={rightChecked.length === 0}
-            aria-label="move selected left"
-          >
-            &lt;
-          </Button>
+        <Grid container spacing={2} justifyContent="center" alignItems="center">
+          <Grid item>{customList("All Users", left)}</Grid>
+          <Grid item>
+            <Grid container direction="column" alignItems="center">
+              <Button
+                sx={{ my: 0.5 }}
+                variant="outlined"
+                size="small"
+                onClick={handleCheckedRight}
+                disabled={leftChecked.length === 0}
+                aria-label="move selected right"
+              >
+                &gt;
+              </Button>
+              <Button
+                sx={{ my: 0.5 }}
+                variant="outlined"
+                size="small"
+                onClick={handleCheckedLeft}
+                disabled={rightChecked.length === 0}
+                aria-label="move selected left"
+              >
+                &lt;
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid item>{customList("Site Users", right)}</Grid>
         </Grid>
-      </Grid>
-      <Grid item>{customList('Site Users', right)}</Grid>
-    </Grid>
-    </DialogContent>
+      </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => {}} color="primary">
+        <Button onClick={handleAssignUser} color="primary">
           Submit
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default AssignSiteForm
+export default AssignSiteForm;

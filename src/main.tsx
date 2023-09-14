@@ -1,26 +1,27 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import AppRoute from "./App.tsx";
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import { RouterProvider } from 'react-router-dom';
-import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from '@emotion/react';
-import { theme } from './config/theme.ts';
-import { router } from './config/router.tsx';
-import { Provider } from 'react-redux'
-import { store } from './store/app_store.ts';
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import "./style.css";
+import { Provider } from "react-redux";
+import { persistor, store } from "./store/app_store.ts";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { PersistGate } from "redux-persist/integration/react";
+import App from "./App.tsx";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-    <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <RouterProvider router={router} />
-    </ThemeProvider>
-  </Provider>
-  </React.StrictMode>,
-)
+      <PersistGate loading={null} persistor={persistor}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <App />
+        </LocalizationProvider>
+      </PersistGate>
+    </Provider>
+  </React.StrictMode>
+);

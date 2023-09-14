@@ -1,25 +1,46 @@
-import { Add } from '@mui/icons-material';
-import { Button, Divider, List, ListItem, Paper, Stack, Toolbar, Typography } from '@mui/material';
-import { useState } from 'react';
-import {  useNavigate, useParams } from 'react-router-dom';
+import { Delete } from "@mui/icons-material";
+import { Avatar, Button, List, ListItem, Paper } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDeleteUserMutation, useGetUserQuery } from "../api/user.api";
 
 const UserDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { data: user, isLoading} = useGetUserQuery({
+    params: {
+      id: id,
+    }
+  })
+  const [deleteUser] = useDeleteUserMutation();
+  const handleDelete = async () => {
+    try {
+      const val = await deleteUser({
+        params: {
+          id: id,
+        },
+      }).unwrap();
+      console.log(val);
+      navigate(-1);
+    } catch (e) {}
+  };
   return (
-    <Paper sx={{margin: 4}}>
+    <Paper sx={{ margin: 4 }}>
+      {user && <Avatar 
+      src={user?.profileImage || undefined}
+      variant="rounded"
+      sx={{width: 100, height: 100}}
+      />}
+      
       <List>
-        <ListItem onClick={() => {}}>
-          Username {id}
-        </ListItem>
-        <ListItem>
-        email
-        </ListItem>
-        <ListItem>
-        phone number
-        </ListItem>
+        <ListItem>Username {user?.userName}</ListItem>
+        <ListItem>email: {user?.fullName}</ListItem>
+        <ListItem>phone number: {user?.phoneNumber}</ListItem>
+        <Button color="error" startIcon={<Delete />} onClick={handleDelete}>
+          Delete
+        </Button>
       </List>
     </Paper>
-  )
-}
+  );
+};
 
 export default UserDetail;
