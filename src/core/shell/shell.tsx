@@ -13,6 +13,7 @@ import {
   MenuItem,
   Menu as JoyMenu,
   MenuButton,
+  Stack,
 } from "@mui/joy";
 import {
   SearchRounded,
@@ -21,11 +22,15 @@ import {
   MailRounded,
 } from "@mui/icons-material";
 import { Outlet, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../store/app_api";
+import { BASE_URL, api } from "../../store/app_api";
 import { useGetSiteByUserQuery } from "../../feature/site/api/site_endpoints";
+import { SiteModel } from "../../feature/site/model/site";
+import { useDispatch, useSelector } from "react-redux";
+import { setSite } from "./state/site_action";
 
 function Shell() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedSite, setSelectedSite] = useState<SiteModel | undefined>();
   const user = JSON.parse(localStorage.getItem("userData") ?? "");
 
   useEffect(() => {
@@ -41,6 +46,25 @@ function Shell() {
       userId: user.user.id,
     },
   });
+  const dispatch = useDispatch();
+
+  const handleSiteChange = (site: SiteModel) => {
+    dispatch(setSite(site));
+    dispatch(api.util.resetApiState());
+    setSelectedSite(site)
+  }
+  const site = useSelector((state: any) => state.site);
+  useEffect(() => {
+    if (sites && sites.length > 0) {
+      dispatch(setSite(sites?.[0]));
+      setSelectedSite(site);
+    }
+  }, [site])
+  useEffect(() => {
+    if (sites && sites.length > 0 && !selectedSite) {
+      dispatch(setSite(sites?.[0]));
+    }
+  })
   return (
     <Box>
       {drawerOpen && (
@@ -78,11 +102,14 @@ function Shell() {
               variant="soft"
               sx={{ display: { xs: "none", sm: "inline-flex" } }}
             >
-              <MailRounded color="primary" />
+              <MailRounded />
             </IconButton>
-            <Typography component="h1" fontWeight="xl" color="primary">
-              BUILD CONNECT
-            </Typography>
+            <Stack>
+              <Typography component="h1" fontWeight="xl">
+                BUILD CONNECT
+              </Typography>
+              <Typography level="body-xs">{site?.name}</Typography>
+            </Stack>
             {/* <BuildConnectLogo /> */}
           </Box>
           <Input
@@ -107,41 +134,18 @@ function Shell() {
             }}
           />
           <Box sx={{ display: "flex", flexDirection: "row", gap: 1.5 }}>
-            {/* <IconButton
-              size="sm"
-              variant="soft"
-              color="neutral"
-              // sx={{ display: { xs: "inline-flex", sm: "none" } }}
-            >
-              <SearchRounded />
-            </IconButton> */}
-
             <ColorSchemeToggle />
-            <Menu
-              id="app-selector"
-              control={
-                <IconButton variant="soft" color="neutral" aria-label="Apps">
-                  <GridViewRounded />
-                </IconButton>
-              }
-              menus={
-                sites?.map((site) => ({
-                  label: site.name,
-                  active: true,
-                  href: "./",
-                  "aria-current": "page",
-                })) ?? []
-              }
-            />
-            {/* <IconButton
-              size="sm"
-              variant="soft"
-              color="neutral"
-              component="a"
-              href="/blog/first-look-at-joy/"
-            >
-              <BookRounded />
-            </IconButton> */}
+            <Dropdown>
+              <MenuButton variant="soft" color="neutral" aria-label="Apps" size="sm">
+                <GridViewRounded />
+              </MenuButton>
+
+              <JoyMenu>
+                {sites?.map((site, index) => (
+                  <MenuItem selected={selectedSite?.id == site.id} key={`${site.name}-${index}`} onClick={() => handleSiteChange(site)}>{site.name}</MenuItem>
+                ))}
+              </JoyMenu>
+            </Dropdown>
             <Dropdown>
               <MenuButton variant="plain" size="sm">
                 <Avatar src={`${BASE_URL}${user.user.profileImage}`} />
@@ -160,7 +164,7 @@ function Shell() {
           <Navigation />
         </Layout.SideNav>
         <Layout.Main>
-          <Box display="flex" flex={1} width="100%" height="100%">
+          <Box display="flex" flex={1} width="100%">
             <Outlet />
           </Box>
         </Layout.Main>

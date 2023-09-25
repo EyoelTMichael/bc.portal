@@ -1,60 +1,77 @@
 import {
+  Campaign,
+  DisplaySettings,
   EditAttributesOutlined,
+  Engineering,
+  FolderZip,
+  Foundation,
   GestureOutlined,
   HomeMaxOutlined,
   Person2Outlined,
+  ReceiptLong,
   SettingsOutlined,
+  SettingsSuggest,
+  SquareFoot,
+  Update,
+  Verified,
 } from "@mui/icons-material";
 
 export const SIDEBAR_DATA = [
   {
     name: "Sites",
-    icon: <HomeMaxOutlined color="primary" />,
+    icon: <Foundation />,
     children: [
       {
         name: "Site",
-        icon: <EditAttributesOutlined color="primary" />,
+        icon: <EditAttributesOutlined />,
         path: "/site",
       },
-      {
-        name: "Site Activity",
-        icon: <EditAttributesOutlined color="primary" />,
-        path: "/site-activity",
-      },
-      {
-        name: "Site Reports",
-        icon: <EditAttributesOutlined color="primary" />,
-        path: "/site-report",
-      },
-      {
-        name: "Schedule",
-        icon: <EditAttributesOutlined color="primary" />,
-        path: "/schedule",
-      },
-      {
-        name: "Inspection",
-        icon: <EditAttributesOutlined color="primary" />,
-        path: "/inspection",
-      },
+
     ],
   },
   {
+    name: "Site Reports",
+    icon: <ReceiptLong />,
+    path: "/site-report",
+  },
+  {
     name: "User",
-    icon: <Person2Outlined color="primary" />,
+    icon: <Engineering />,
     path: "/users",
   },
   {
+    name: "Site Activity",
+    icon: <Campaign />,
+    path: "/site-activity",
+  },
+
+  {
+    name: "Schedule",
+    icon: <SquareFoot />,
+    path: "/schedule",
+  },
+  {
+    name: "RFI",
+    icon: <Update />,
+    path: "/rfi",
+  },
+  {
+    name: "Inspection",
+    icon: <Verified />,
+    path: "/inspection",
+  },
+  {
     name: "Configuration",
-    icon: <SettingsOutlined color="primary" />,
+    icon: <SettingsSuggest />,
     children: [
       {
         name: "Lookup",
-        icon: <GestureOutlined color="primary" />,
+        icon: <DisplaySettings />,
         path: "configuration/lookup",
       },
       {
         name: "Folders",
-        icon: <GestureOutlined color="primary" />,
+        icon: <FolderZip />,
         path: "configuration/files",
       },
     ],

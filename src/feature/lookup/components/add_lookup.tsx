@@ -6,6 +6,7 @@ import {
   useUpdateLookupMutation,
 } from "../api/lookup_endpoint";
 import DefaultDialog from "../../../core/ui/default_dialog";
+import { useSelector } from "react-redux";
 
 interface AddLookupProps {
   lookup?: Lookup;
@@ -15,6 +16,7 @@ interface AddLookupProps {
 }
 
 const AddLookup = (props: AddLookupProps) => {
+  const site = useSelector((state: any) => state.site);
   const [createLookup] = useCreateLookupMutation();
   const [updateLookup] = useUpdateLookupMutation();
   const handleLookup = async (data: any) => {
@@ -25,7 +27,7 @@ const AddLookup = (props: AddLookupProps) => {
             id: props.lookup?.id,
             name: data.name,
             description: data.description,
-            siteId: "27e8d717-ec2e-49cf-bb42-7ca1253cf5c0"
+            siteId: site?.id
           },
         });
       } else {
@@ -34,7 +36,7 @@ const AddLookup = (props: AddLookupProps) => {
             name: data.name,
             description: data.description,
             lookupType: props.lookupType,
-            siteId: "27e8d717-ec2e-49cf-bb42-7ca1253cf5c0"
+            siteId: site?.id
           },
         });
       }

@@ -1,5 +1,6 @@
-import { Box, Divider, Typography, Stack, Sheet } from "@mui/joy";
+import { Box, Divider, Typography, Stack, Sheet, styled } from "@mui/joy";
 import React, { PropsWithChildren } from "react";
+import { APPBAR_HEIGHT } from "../layout/layout";
 
 interface DefaultPageProps {
   title: string;
@@ -8,11 +9,19 @@ interface DefaultPageProps {
   otherElement?: React.ReactElement;
 }
 
+export const StyledSheet = styled(Sheet)(({ theme }) => ({
+  color: "inherit",
+  height: `calc(100vh - ${APPBAR_HEIGHT} - 50)`,
+}));
+
 const DefaultPage = (props: PropsWithChildren<DefaultPageProps>) => {
   return (
-    <Sheet
-      sx={{
-        margin: 1,
+    <StyledSheet
+      sx={(theme) => ({
+        margin: {
+          sm: 'auto',
+          md: 1
+        },
         width: "100%",
         flex: 1,
         display: "flex",
@@ -20,8 +29,11 @@ const DefaultPage = (props: PropsWithChildren<DefaultPageProps>) => {
         flexDirection: "column",
         elevation: 16,
         boxShadow: 16,
-      }}
+      })}
       variant="outlined"
+      style={{
+        height: `calc(100vh - ${APPBAR_HEIGHT} - 50) !important,`
+      }}
     >
       <Box
         sx={{ display: "flex", justifyContent: "space-between", p: 1 }}
@@ -52,7 +64,7 @@ const DefaultPage = (props: PropsWithChildren<DefaultPageProps>) => {
       </Box>
       <Divider />
       <Box flex={1}>{props.children}</Box>
-    </Sheet>
+    </StyledSheet>
   );
 };
 

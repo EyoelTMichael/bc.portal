@@ -1,24 +1,12 @@
-import { Add, ArrowRight, Edit, Search } from "@mui/icons-material";
-import {
-  Button,
-  TextField,
-  InputAdornment,
-  Paper,
-  CircularProgress,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableContainer,
-  TableRow,
-} from "@mui/material";
+import { Add, ArrowForward, ArrowRight, Edit, Search } from "@mui/icons-material";
 import AddSite from "../components/add_site";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetSitesQuery } from "../api/site_endpoints";
 import { SiteModel } from "../model/site";
-import { Box } from "@mui/joy";
+import { Box, Button, CircularProgress, Input } from "@mui/joy";
 import DefaultPage from "../../../core/shell/default_page/default_page";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 
 function SitePage() {
   const [addSite, setAddSite] = useState<boolean>(false);
@@ -27,33 +15,82 @@ function SitePage() {
     undefined
   );
   const navigate = useNavigate();
-  const { data, isLoading } = useGetSitesQuery({
+  const { data: sites, isLoading } = useGetSitesQuery({
     params: {},
   });
+  const columns = useMemo<MRT_ColumnDef<SiteModel>[]>(
+    () => [
+      {
+        accessorKey: "name", //access nested data with dot notation
+        header: "Site Name",
+        size: 150,
+      },
+      {
+        accessorKey: "owner",
+        header: "Owner",
+        size: 150,
+      },
+      {
+        accessorKey: "client",
+        header: "Client",
+        size: 150,
+      },
+      {
+        accessorKey: "supervisor",
+        header: "Supervisor",
+        size: 150,
+      },
+      {
+        accessorKey: "contractor",
+        header: "Contractor",
+        size: 150,
+      },
+      // {
+      //   accessorKey: "rate",
+      //   header: "Rate",
+      //   size: 150,
+      // },
+      // {
+      //   accessorKey: "quantity",
+      //   header: "Quantity",
+      //   size: 150,
+      // },
+      {
+        header: "",
+        id: "details",
+        accessorFn(originalRow) {
+          return (
+            <Button
+              variant="plain"
+              endDecorator={<ArrowForward />}
+              onClick={() => navigate(`./${originalRow.id}`)}
+            >
+              Detail
+            </Button>
+          );
+        },
+        size: 150,
+      },
+    ],
+    []
+  );
   return (
     <DefaultPage
       title="Site"
       primaryButton={
         <Button
-          startIcon={<Add />}
-          variant="contained"
+          startDecorator={<Add />}
+          variant="outlined"
           onClick={() => setAddSite(true)}
         >
           Add Site
         </Button>
       }
       otherElement={
-        <TextField
-          id="search"
-          label="Search Site"
+        <Input
           variant="outlined"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
+          placeholder="Search…"
+          startDecorator={<Search />}
         />
       }
     >
@@ -62,56 +99,19 @@ function SitePage() {
           <CircularProgress sx={{ width: 12, height: 12 }} />
         </Box>
       ) : (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Owner</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.map((row: SiteModel) => (
-                <TableRow
-                  key={row.name}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell>{row.owner}</TableCell>
-                  <TableCell align="right">
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="end"
-                      gap={2}
-                    >
-                      <Button
-                        startIcon={<Edit />}
-                        onClick={() => {
-                          setSelectedSite(row);
-                          setEditSite(true);
-                        }}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        endIcon={<ArrowRight />}
-                        onClick={() => {
-                          navigate(`./${row.id}`);
-                        }}
-                      >
-                        Detail
-                      </Button>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <MaterialReactTable
+          columns={columns}
+          data={sites ?? []}
+          getRowId={(originalRow) => originalRow.id}
+          muiTableBodyRowProps={({ row }) => ({
+            onDoubleClick: (_) => {
+              console.info(row.id);
+            },
+            sx: {
+              cursor: 'pointer',
+            },
+          })}
+        />
       )}
       {addSite && <AddSite open={addSite} onClose={() => setAddSite(false)} />}
       {editSite && (

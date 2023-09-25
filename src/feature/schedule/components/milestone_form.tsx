@@ -7,6 +7,7 @@ import {
 } from "../api/schedule_endpoint";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Schedule } from "../model/schedule";
+import { useSelector } from "react-redux";
 
 interface AddScheduleProps {
   open: boolean;
@@ -15,6 +16,7 @@ interface AddScheduleProps {
 }
 
 const MilestoneForm = (props: AddScheduleProps) => {
+  const site = useSelector((state: any) => state.site);
   const [createSchedule] = useCreateScheduleMutation();
   const [updateSchedule] = useUpdateScheduleMutation();
   const handleLookup = async (data: any) => {
@@ -27,7 +29,7 @@ const MilestoneForm = (props: AddScheduleProps) => {
             description: data.description,
             fromDate: data.fromDate,
             toDate: data.toDate,
-            siteId: "fdcaafa4-19e6-4c7d-b76f-9dd8a8efb965",
+            siteId: site?.id,
             //   parentSchedule: props.schedule?.id ?? undefined,
           },
         });
@@ -39,7 +41,7 @@ const MilestoneForm = (props: AddScheduleProps) => {
             description: data.description,
             fromDate: data.fromDate,
             toDate: data.toDate,
-            siteId: "fdcaafa4-19e6-4c7d-b76f-9dd8a8efb965",
+            siteId: site?.id,
             //   parentSchedule: props.schedule?.id ?? undefined,
           },
         });

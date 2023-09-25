@@ -2,6 +2,7 @@ import React, { SetStateAction } from 'react'
 import { Schedule } from '../model/schedule'
 import { Select, Option } from '@mui/joy';
 import { useGetAllSchedulesQuery } from '../api/schedule_endpoint';
+import { useSelector } from 'react-redux';
 
 interface SelectScheduleProps {
     schedule?: Schedule;
@@ -9,8 +10,9 @@ interface SelectScheduleProps {
 }
 
 const SelectSchedule: React.FC<SelectScheduleProps> = (props) => {
+    const site = useSelector((state: any) => state.site);
     const { data: schedules } = useGetAllSchedulesQuery({
-        params: { siteId: "6909b1ef-c882-4749-8594-9c779a8deff6" },
+        params: { siteId: site?.id },
     });
     const handleChange = (_: React.SyntheticEvent | null,
         newValue: string | null,) => {

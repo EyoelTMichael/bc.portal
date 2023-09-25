@@ -1,28 +1,22 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Close, FileDownload } from "@mui/icons-material";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/joy";
+import { formatBytes } from "./format_bytes";
 
 interface AddFilesDropZoneProps {
-  file: string | undefined;
-  setFile: React.Dispatch<React.SetStateAction<string | undefined>>;
+  file: File | undefined;
+  setFile: React.Dispatch<React.SetStateAction<File | undefined>>;
 }
 
 export default function AddFilesDropZone(props: AddFilesDropZoneProps) {
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        const base64String = event.target?.result as string;
-        props.setFile(base64String);
-        setFiles((prevFiles) => [...prevFiles, base64String]);
-      };
-
-      reader.readAsDataURL(file);
+      props.setFile(file);
+      setFiles((prevFiles) => [...prevFiles, file]);
     },
     [props.setFile]
   );
@@ -38,9 +32,9 @@ export default function AddFilesDropZone(props: AddFilesDropZoneProps) {
         ) : (
           <Box
             sx={(theme) => ({
-              backgroundColor: theme.palette.grey[200],
+              backgroundColor: theme.palette.divider,
               padding: 2,
-              border: `1px dashed ${theme.palette.primary.light}`,
+              border: `1px dashed ${theme.palette.primary}`,
               display: "flex",
               gap: 1,
               flexDirection: "column",
@@ -53,34 +47,34 @@ export default function AddFilesDropZone(props: AddFilesDropZoneProps) {
                 sx={(theme) => ({ color: theme.palette.primary.light })}
               />
               <Typography
-                variant="body1"
-                sx={(theme) => ({ color: theme.palette.primary.dark })}
+                level="body-lg"
+                sx={(theme) => ({ color: theme.palette.primary })}
               >
                 Upload files
               </Typography>
             </Stack>
             <Typography
-              variant="body2"
-              sx={(theme) => ({ color: theme.palette.primary.dark })}
+              level="body-md"
+              sx={(theme) => ({ color: theme.palette.primary })}
             >
               Drop the files here ..
             </Typography>
           </Box>
         )}
       </div>
-      {files.map((base64String, index) => (
+      {files.map((file, index) => (
         <Box
           key={index}
           sx={(theme) => ({
-            backgroundColor: theme.palette.grey[200],
+            backgroundColor: theme.palette.divider,
             padding: 2,
-            border: `1px dashed ${theme.palette.primary.light}`,
+            border: `1px dashed ${theme.palette.primary}`,
             display: "flex",
             gap: 1,
             flexDirection: "column",
             alignItems: "start",
             justifyContent: "start",
-            marginY: 2,
+            margin: 2,
           })}
         >
           <Stack
@@ -95,25 +89,25 @@ export default function AddFilesDropZone(props: AddFilesDropZoneProps) {
               sx={(theme) => ({ color: theme.palette.primary.light })}
             />
             <Typography
-              variant="body1"
-              sx={(theme) => ({ color: theme.palette.primary.dark })}
+              level="body-lg"
+              sx={(theme) => ({ color: theme.palette.primary })}
             >
-              Image {index + 1} (base64)
+              {file.name}
             </Typography>
           </Stack>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Stack spacing={1}>
               <Typography
-                variant="body2"
-                sx={(theme) => ({ color: theme.palette.primary.dark })}
+                level="body-md"
+                sx={(theme) => ({ color: theme.palette.primary })}
               >
-                File type: Image
+                File type: {file.type || "Unknown"}
               </Typography>
               <Typography
-                variant="body2"
-                sx={(theme) => ({ color: theme.palette.primary.dark })}
+                level="body-md"
+                sx={(theme) => ({ color: theme.palette.primary })}
               >
-                File Size: {Math.round((base64String.length * 3) / 4)} bytes
+                File Size: {formatBytes(file.size)}
               </Typography>
             </Stack>
             <IconButton

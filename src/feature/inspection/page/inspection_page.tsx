@@ -20,14 +20,16 @@ import { Inspection } from "../model/inspection";
 import InspectionForm from "../component/inspection_form";
 import InsTable from "../component/ins_table";
 import InspectionDetail from "../component/inspection_detail";
+import { useSelector } from "react-redux";
 
 const InspectionPage = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null
   );
   const [openInspectionForm, setOpenInspectionForm] = useState<boolean>(false);
+  const site = useSelector((state: any) => state.site);
   const { data: schedules } = useGetAllSchedulesQuery({
-    params: { siteId: "27e8d717-ec2e-49cf-bb42-7ca1253cf5c0" },
+    params: { siteId: site?.id },
   });
   const [selectedInspection, setSelectedInspection] = useState<
     Inspection | undefined

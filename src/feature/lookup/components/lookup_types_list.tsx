@@ -1,42 +1,49 @@
 import { SetStateAction } from "react";
 import { useGetLookupTypesQuery } from "../api/lookup_endpoint";
-import { List, ListItem, ListItemButton } from "@mui/joy";
+import { Box, List, ListItem, ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
+import { LookupType } from "../model/lookup";
+import { Apps } from "@mui/icons-material";
 
 interface LookupTypeListProps {
-  lookupType: number;
+  selectedLookup: LookupType;
   setLookupType: React.Dispatch<SetStateAction<number>>;
 }
 
 const LookupTypeList: React.FC<LookupTypeListProps> = (props) => {
-  const { data } = useGetLookupTypesQuery({
+  const { data: lookupTypes } = useGetLookupTypesQuery({
     params: {},
   });
 
-  const handleLookupTypeClick = (lookupType: number) => {
+  const handleLookupType = (lookupType: number) => {
     props.setLookupType(lookupType);
   };
 
   return (
-    <List
-      variant="outlined"
-      sx={
-        {
-          // width: 200,
-          // borderRadius: "sm",
-        }
-      }
-    >
-      {data?.map((lookupType: string, index: number) => (
-        <ListItem>
-          <ListItemButton
-            selected={index == props.lookupType}
-            onClick={() => handleLookupTypeClick(index)}
-          >
+    <Box sx={theme => ({ borderRight: .3, borderRightColor: theme.palette.neutral[300], height: '100%', width: "100%" })}>
+      <Typography
+        id="decorated-list-demo"
+        level="body-xs"
+        textTransform="uppercase"
+        fontWeight="lg"
+        sx={{ p: 2 }}
+      >
+        Lookup Types
+      </Typography>
+      <List
+        sx={{
+        }}
+      >
+        {lookupTypes?.map((lookupType: any, index: number) => (<ListItem>
+          <ListItemButton selected={props.selectedLookup == index} onClick={() => handleLookupType(index)}>
+            <ListItemDecorator>
+              <Apps />
+            </ListItemDecorator>
             {lookupType}
           </ListItemButton>
         </ListItem>
-      ))}
-    </List>
+        ))}
+      </List>
+    </Box>
   );
 };
 

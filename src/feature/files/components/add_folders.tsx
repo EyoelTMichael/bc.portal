@@ -19,6 +19,7 @@ import {
   useUpdateFolderMutation,
 } from "../api/files_endpoints";
 import useUserData from "../../../core/auth/hooks/useUserData";
+import { useSelector } from "react-redux";
 
 interface AddFolderDialogProps {
   folder?: Folder;
@@ -27,6 +28,7 @@ interface AddFolderDialogProps {
 }
 
 const AddFolder = (props: AddFolderDialogProps) => {
+  const site = useSelector((state: any) => state.site);
   const [name, setName] = useState(props?.folder?.name ?? "");
   const [siteId, setSiteId] = useState<string | undefined>(undefined);
 
@@ -47,7 +49,7 @@ const AddFolder = (props: AddFolderDialogProps) => {
         await createFolder({
           body: {
             name,
-            siteId: data?.user,
+            siteId: site?.id,
           },
         });
       }

@@ -20,6 +20,7 @@ import AddFile from "../components/add_file";
 import FileTable from "../components/file_table";
 import { Box, Button, Divider, IconButton, Typography } from "@mui/joy";
 import DefaultPage from "../../../core/shell/default_page/default_page";
+import { useSelector } from "react-redux";
 
 const FilesPage = () => {
   const [openAddFolder, setOpenAddFolder] = useState<boolean>(false);
@@ -27,9 +28,10 @@ const FilesPage = () => {
   const [selectedFolder, setSelectedFolder] = useState<Folder | undefined>(
     undefined
   );
+  const site = useSelector((state: any) => state.site);
   const { data: folders } = useGetFoldersQuery({
     params: {
-      siteId: "27e8d717-ec2e-49cf-bb42-7ca1253cf5c0"
+      siteId: site?.id
     }
   });
 
@@ -95,6 +97,7 @@ const FilesPage = () => {
             <Typography fontWeight={"bold"}>{selectedFolder?.name}</Typography>
             {selectedFolder && (
               <Button
+                variant="outlined"
                 startDecorator={<Add />}
                 // ="contained"
                 onClick={() => setOpenAddFile(true)}

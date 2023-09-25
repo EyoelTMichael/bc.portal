@@ -144,67 +144,7 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
               );
             })}
           </tbody>
-          {/* <tfoot>
-            <tr>
-              <td colSpan={6}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <FormControl orientation="horizontal" size="sm">
-                    <FormLabel>Rows per page:</FormLabel>
-                    <Select
-                      onChange={handleChangeRowsPerPage}
-                      value={rowsPerPage}
-                    >
-                      <Option value={5}>5</Option>
-                      <Option value={10}>10</Option>
-                      <Option value={25}>25</Option>
-                    </Select>
-                  </FormControl>
-                  <Typography textAlign="center" sx={{ minWidth: 80 }}>
-                    {labelDisplayedRows({
-                      from:
-                        props.rows.length === 0 ? 0 : page * rowsPerPage + 1,
-                      to: getLabelDisplayedRowsTo(),
-                      count: props.rows.length === -1 ? -1 : props.rows.length,
-                    })}
-                  </Typography>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                      size="sm"
-                      color="neutral"
-                      variant="outlined"
-                      disabled={page === 0}
-                      onClick={() => handleChangePage(page - 1)}
-                      sx={{ bgcolor: "background.surface" }}
-                    >
-                      <KeyboardArrowLeft />
-                    </IconButton>
-                    <IconButton
-                      size="sm"
-                      color="neutral"
-                      variant="outlined"
-                      disabled={
-                        props.rows.length !== -1
-                          ? page >=
-                            Math.ceil(props.rows.length / rowsPerPage) - 1
-                          : false
-                      }
-                      onClick={() => handleChangePage(page + 1)}
-                      sx={{ bgcolor: "background.surface" }}
-                    >
-                      <KeyboardArrowRight />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </td>
-            </tr>
-          </tfoot> */}
+          
         </Table>
       </Sheet>
     </div>

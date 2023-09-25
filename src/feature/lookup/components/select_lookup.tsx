@@ -2,7 +2,7 @@ import React, { SetStateAction, useEffect, useState } from "react";
 import { Lookup, LookupType } from "../model/lookup";
 import { Autocomplete, AutocompleteOption, CircularProgress } from "@mui/joy";
 import { useGetLookupsByLookupTypeQuery } from "../api/lookup_endpoint";
-import { LiveTv } from "@mui/icons-material";
+import { LiveTv, Note, NoteOutlined } from "@mui/icons-material";
 
 interface SelectLookupProps {
   title: string;
@@ -30,7 +30,7 @@ const SelectLookup: React.FC<SelectLookupProps> = (props) => {
     <Autocomplete<Lookup>
       size="sm"
       sx={{ width: '100%' }}
-      startDecorator={<LiveTv />}
+      startDecorator={<NoteOutlined />}
       placeholder={props.title}
       value={selectLookup ?? props.lookup}
       options={lookups ?? []}

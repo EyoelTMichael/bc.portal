@@ -6,6 +6,9 @@ import {
 } from "../api/work_item_endpoints";
 import DefaultDialog from "../../../core/ui/default_dialog";
 import { Schedule } from "../../schedule/model/schedule";
+import { useState } from "react";
+import { Lookup, LookupType } from "../../lookup/model/lookup";
+import SelectLookup from "../../lookup/components/select_lookup";
 
 interface AddWorkItemDialogProps {
   workItem?: WorkItem;
@@ -15,6 +18,7 @@ interface AddWorkItemDialogProps {
 }
 
 const WorkItemForm = (props: AddWorkItemDialogProps) => {
+  const [unit, setUnit] = useState<Lookup | null>(null);
   const [createWorkItem] = useCreateWorkItemMutation();
   const [updateWorkItem] = useUpdateWorkItemMutation();
   const handleSubmit = async (data: WorkItem) => {
@@ -27,7 +31,7 @@ const WorkItemForm = (props: AddWorkItemDialogProps) => {
             description: data.description,
             rate: data.rate,
             quantity: data.quantity,
-            unit: data.unit,
+            unit: unit?.id,
           },
         });
         props.onClose();
@@ -39,7 +43,7 @@ const WorkItemForm = (props: AddWorkItemDialogProps) => {
             description: data.description,
             rate: data.rate,
             quantity: data.quantity,
-            unit: data.unit,
+            unit: unit?.id,
           },
         });
       }
@@ -66,17 +70,18 @@ const WorkItemForm = (props: AddWorkItemDialogProps) => {
       >
         <Stack spacing={2}>
           <Stack spacing={2}>
-            <Input placeholder="Name" name="name" required />
-            <Input placeholder="Description" name="description" required />
-            <Input placeholder="Unit" name="unit" required />
+            <Input size="sm" placeholder="Name" name="name" required />
+            <Input size="sm" placeholder="Description" name="description" required />
+            <SelectLookup lookupType={LookupType.UnitOfMeasure} setLookup={setUnit} lookup={unit} title="Unit of meausre" />
             <Input
               placeholder="Quantity"
               name="quantity"
               required
               type="number"
+              size="sm"
             />
-            <Input placeholder="Rate" name="rate" required type="number" />
-            <Input placeholder="Amount" name="amount" required type="number" />
+            <Input size="sm" placeholder="Rate" name="rate" required type="number" />
+            <Input size="sm" placeholder="Amount" name="amount" required type="number" />
             <Button type="submit">Submit</Button>
           </Stack>
         </Stack>

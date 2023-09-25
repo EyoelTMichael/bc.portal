@@ -57,6 +57,7 @@ export const filesEndpoints = api.injectEndpoints({
       query: (data) => ({
         url: "/file",
         method: "post",
+        headers: data?.headers,
         data: data?.body,
         params: data?.params,
       }),

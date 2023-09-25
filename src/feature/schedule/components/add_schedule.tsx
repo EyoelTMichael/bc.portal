@@ -8,6 +8,7 @@ import {
 } from "../api/schedule_endpoint";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 interface AddScheduleProps {
   schedule?: Schedule;
@@ -17,6 +18,7 @@ interface AddScheduleProps {
 }
 
 const AddSchedule = (props: AddScheduleProps) => {
+  const site = useSelector((state: any) => state.site);
   // const [status, setStatus] = useState<boolean>()
   const [fromDate, setFromDate] = useState<Date | null>(new Date());
   const [toDate, setToDate] = useState<Date | null>(new Date());
@@ -30,7 +32,7 @@ const AddSchedule = (props: AddScheduleProps) => {
           description: data.description,
           fromDate: fromDate?.toISOString(),
           toDate: toDate?.toISOString(),
-          siteId: "fdcaafa4-19e6-4c7d-b76f-9dd8a8efb965",
+          siteId: site?.id,
           parentSchedule: props.schedule?.id ?? undefined,
         },
       });

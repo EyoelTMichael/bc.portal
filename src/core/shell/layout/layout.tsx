@@ -1,6 +1,7 @@
 import * as React from "react";
 import Box, { BoxProps } from "@mui/joy/Box";
 import Sheet from "@mui/joy/Sheet";
+export const APPBAR_HEIGHT = 60;
 
 function Root(props: BoxProps) {
   return (
@@ -43,6 +44,7 @@ function Header(props: BoxProps) {
           borderColor: "divider",
           position: "sticky",
           top: 0,
+          height: APPBAR_HEIGHT,
           zIndex: 1100,
         },
         ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
@@ -60,12 +62,17 @@ function SideNav(props: BoxProps) {
       sx={[
         {
           p: 2,
+          minWidth: {
+            sm: 0,
+            md: 150
+          },
           bgcolor: "background.surface",
           borderRight: "1px solid",
           borderColor: "divider",
           display: {
             xs: "none",
-            sm: "initial",
+            sm: "block",
+            md: "Initial",
           },
         },
         ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
@@ -73,6 +80,7 @@ function SideNav(props: BoxProps) {
     />
   );
 }
+
 
 function SidePane(props: BoxProps) {
   return (

@@ -3,7 +3,7 @@ import { SiteModel } from "../model/site";
 
 export const siteEndpoints = api.injectEndpoints({
   endpoints: (builder) => ({
-    getSites: builder.query<any, any>({
+    getSites: builder.query<SiteModel[], any>({
       query: (data) => ({
         url: "/site/all",
         method: "get",
@@ -32,6 +32,9 @@ export const siteEndpoints = api.injectEndpoints({
         url: "/site",
         method: "post",
         data: data?.body,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
         params: data?.params,
       }),
       invalidatesTags: (result) => (result ? ["site"] : []),

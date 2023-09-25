@@ -22,7 +22,6 @@ const DefaultDialog: React.FC<React.PropsWithChildren<DefaultDialogProps>> = (
       <ModalDialog
         aria-labelledby="generic-modal-dialog-title"
         aria-describedby="generic-modal-dialog-description"
-        sx={{ maxWidth: 500 }}
       >
         <ModalClose />
         <Typography id="generic-modal-dialog-title" level="h2">

@@ -3,7 +3,8 @@ export enum LookupType {
   Material,
   Equipment,
   Labour,
-  StaffOnSite
+  StaffOnSite,
+  Weather
 }
 
 export interface Lookup {

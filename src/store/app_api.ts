@@ -9,6 +9,7 @@ export const api = createApi({
     "site",
     "user",
     "folder",
+    "rfi",
     "file",
     "lookup",
     "schedule",

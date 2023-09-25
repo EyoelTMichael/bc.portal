@@ -16,25 +16,25 @@ export const axiosBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, headers }) => {
-    // const [userData, setUserData] = useUserData();
-    try {
-      const result = await axios({
-        url: baseUrl + url,
-        method,
-        headers: headers
-          ? headers
-          : {
+    async ({ url, method, data, params, headers }) => {
+      // const [userData, setUserData] = useUserData();
+      try {
+        const result = await axios({
+          url: baseUrl + url,
+          method,
+          headers: headers
+            ? headers
+            : {
               "Content-Type": "application/json",
             },
-        data,
-        // params: { ...params, token: userData.token },
-        params: { ...params },
-      });
-      return { data: result.data };
-    } catch (axiosError) {
-      return {
-        error: axiosError,
-      };
-    }
-  };
+          data,
+          // params: { ...params, token: userData.token },
+          params: { ...params },
+        });
+        return { data: result.data };
+      } catch (axiosError) {
+        return {
+          error: axiosError,
+        };
+      }
+    };

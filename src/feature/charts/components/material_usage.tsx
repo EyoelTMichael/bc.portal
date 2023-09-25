@@ -19,13 +19,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { EQUIPMENTS } from "../../../constants/data";
 import { DatePicker } from "@mui/x-date-pickers";
 
 const MaterialUsage = () => {
-  const [selectedMaterial, setSelectedMaterial] = useState<string>(
-    EQUIPMENTS[0]
-  );
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [data, setData] = useState<any[]>([
@@ -36,21 +32,6 @@ const MaterialUsage = () => {
     <Stack width="100%" spacing={2}>
       {/* <Stack direction="row" spacing={2}> */}
       <Typography variant="h6">Material Usage</Typography>
-      <FormControl variant="outlined" sx={{ minWidth: 300 }}>
-        <InputLabel id="material-label">Material</InputLabel>
-        <Select
-          labelId="material-label"
-          value={selectedMaterial}
-          label="Material"
-          onChange={(e) => setSelectedMaterial(e.target.value as string)}
-        >
-          {EQUIPMENTS.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
       <Box display="flex" gap={2}>
         <DatePicker
           label="From Date"

@@ -45,6 +45,7 @@ import SchedulePage from "../feature/schedule/page/schedule_page";
 import InspectionPage from "../feature/inspection/page/inspection_page";
 import SiteActivity from "../feature/site_activity/page/site_activity";
 import SiteReportPage from "../feature/site_report/page/site_report_page";
+import RFIPage from "../feature/rfi/page/rfi_page";
 
 const AppRoute = () => {
   const token = localStorage.getItem("userData");
@@ -62,6 +63,7 @@ const AppRoute = () => {
             <Route path="site-activity" element={<SiteActivity />} />
             <Route path="site-report" element={<SiteReportPage />} />
             <Route path="schedule" element={<SchedulePage />} />
+            <Route path="rfi" element={<RFIPage />} />
             <Route path="schedule/:id" element={<WorkItemPage />} />
             <Route path="inspection" element={<InspectionPage />} />
             <Route path="work-item" element={<WorkItemPage />} />

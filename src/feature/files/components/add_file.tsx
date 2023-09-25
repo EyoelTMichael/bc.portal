@@ -29,7 +29,7 @@ interface AddFileDialogProps {
 
 const AddFile = (props: AddFileDialogProps) => {
   const [name, setName] = useState(props?.file?.file ?? "");
-  const [file, setFile] = useState<string | undefined>();
+  const [file, setFile] = useState<File | undefined>();
 
   const [createFile] = useCreateFileMutation();
   const [updateFile] = useUpdateFileMutation();
@@ -44,6 +44,9 @@ const AddFile = (props: AddFileDialogProps) => {
         // });
       } else {
         await createFile({
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
           body: {
             fileName: name,
             folderId: props.folder.id,

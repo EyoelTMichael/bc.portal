@@ -1,11 +1,12 @@
 import { Toolbar } from "@mui/material";
 import DefaultPage from "../../../core/shell/default_page/default_page";
-import { Box, Button, Grid, Stack } from "@mui/joy";
+import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/joy";
 import LookupTable from "../components/lookup_table";
 import { useEffect, useState } from "react";
 import AddLookup from "../components/add_lookup";
 import LookupTypeList from "../components/lookup_types_list";
 import { useGetLookupTypesQuery } from "../api/lookup_endpoint";
+import { Add } from "@mui/icons-material";
 
 export const LookupPage = () => {
   const [createLookup, setCreateLookup] = useState<boolean>(false);
@@ -25,28 +26,28 @@ export const LookupPage = () => {
       lookupTypes = Object.keys(data).filter((key) => isNaN(Number(key)));
     }
   }, [data]);
+
   return (
     <DefaultPage title="Lookups">
-      <Toolbar sx={{ display: "flex", justifyContent: "end" }}>
-        <Button sx={{ alignSelf: "end" }} onClick={handleCreateLookup}>
-          Create Lookup
-        </Button>
-      </Toolbar>
-      <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-        <Grid xs={2}>
-          <Stack spacing={2}>
-            <LookupTypeList
-              setLookupType={setSelectedLookupType}
-              lookupType={selectedLookupType}
-            />
-          </Stack>
-        </Grid>
-        <Grid xs={10}>
-          <Box padding={2}>
-            <LookupTable selectedLookupType={selectedLookupType} />
+      <Box display="flex" height="100%">
+        <Box width="20%" height="100%">
+
+          <LookupTypeList
+            setLookupType={setSelectedLookupType}
+            selectedLookup={selectedLookupType}
+          />
+
+        </Box>
+        <Box padding={1} width="100%">
+          <Box display="flex" justifyContent="space-between" padding={2} alignItems="start">
+            <Typography level="h4" color="neutral">{selectedLookupType}</Typography>
+            <Button variant="outlined" startDecorator={<Add />} onClick={handleCreateLookup}>Add Lookup</Button>
           </Box>
-        </Grid>
-      </Grid>
+          <Divider />
+          <LookupTable selectedLookupType={selectedLookupType} />
+        </Box>
+      </Box>
+
       {createLookup && (
         <AddLookup
           open={createLookup}

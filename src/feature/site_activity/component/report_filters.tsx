@@ -1,11 +1,13 @@
 import { Box, Select, Option, Typography } from "@mui/joy";
 import React from "react";
 import { useGetAllSchedulesQuery } from "../../schedule/api/schedule_endpoint";
+import { useSelector } from "react-redux";
 
 const ReportFilters = () => {
+  const site = useSelector((state: any) => state.site);
   const { data } = useGetAllSchedulesQuery({
     params: {
-      siteId: "fdcaafa4-19e6-4c7d-b76f-9dd8a8efb965",
+      siteId: site?.id,
     },
   });
   return (

@@ -3,6 +3,7 @@ import { Autocomplete, CircularProgress } from "@mui/joy";
 import { LiveTv } from "@mui/icons-material";
 import { Material } from "../model/material";
 import { useGetMaterialsQuery } from "../api/material_endpoint";
+import { useSelector } from "react-redux";
 
 interface SelectMaterialProps {
 	title: string;
@@ -12,9 +13,10 @@ interface SelectMaterialProps {
 }
 
 const SelectMaterial: React.FC<SelectMaterialProps> = (props) => {
+	const site = useSelector((state: any) => state.site);
 	const { data: materials, isLoading: loading } = useGetMaterialsQuery({
 		params: {
-			siteId: "27e8d717-ec2e-49cf-bb42-7ca1253cf5c0",
+			siteId: site?.id,
 		},
 	});
 

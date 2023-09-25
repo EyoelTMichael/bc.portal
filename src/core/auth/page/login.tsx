@@ -5,15 +5,16 @@ import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import useUserData from "../hooks/useUserData";
 import { useDispatch } from "react-redux";
 import { login } from "../store/auth_slice";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../store/app_api";
 
 export default function LoginFinal() {
-  const [data, setData] = useUserData();
+  const [_, setData] = useUserData();
   const dispatch = useDispatch();
   const [staff, setStaff] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -27,10 +28,10 @@ export default function LoginFinal() {
         <Sheet
           sx={{
             width: 350,
-            mx: "auto", // margin left & right
-            my: 4, // margin top & bottom
-            py: 3, // padding top & bottom
-            px: 2, // padding left & right
+            mx: "auto",
+            my: 4,
+            py: 3,
+            px: 2,
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -45,7 +46,7 @@ export default function LoginFinal() {
               try {
                 const formData = new FormData(event.currentTarget);
                 const response = await axios.post(
-                  "http://192.168.43.82:5259/auth/login",
+                  `${BASE_URL}/auth/login`,
                   {
                     userName: formData.get("userName"),
                     siteName: formData.get("site"),
